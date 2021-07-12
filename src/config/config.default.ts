@@ -24,9 +24,9 @@ export const orm = {
   type: 'mysql',
   host: 'localhost',
   port: 3306,
-  username: '',
-  password: '',
-  database: '',
-  synchronize: false,   // 如果第一次使用，不存在表，有同步的需求可以写 true
+  username: 'root',
+  password: '3893712nsy',
+  database: 'nmsn',
+  synchronize: true, // 如果第一次使用，不存在表，有同步的需求可以写 true
   logging: false,
 };
