@@ -1,4 +1,4 @@
-import { Provide } from '@midwayjs/decorator';
+import { Provide, Inject, TaskLocal, Task } from '@midwayjs/decorator';
 const RSSHub = require('rsshub');
 
 export type RSSHubType =
@@ -12,7 +12,7 @@ export type RSSHubType =
   | 'd2'
   | 'imuseum';
 // 获取类型对应的所有链接
-const getTypeUrl = (type?: RSSHubType) => {
+const getType = (type?: RSSHubType) => {
   return `/api/routes/${type}`;
 };
 
@@ -100,13 +100,24 @@ RSSHub.init({
 @Provide()
 export class RSSHubService {
   async getData() {
-    const data = await RSSHub.request(getTypeUrl('juejin'));
+    const data = await RSSHub.request(getType('juejin'));
     console.log(data);
     return data;
   }
 
-  async getTypeUrl(type: RSSHubType) {
-    const data = await RSSHub.request(getTypeUrl(type));
+  async getType(type: RSSHubType) {
+    const data = await RSSHub.request(getType(type));
     return data;
+  }
+
+  async getUrl(url: string) {
+    const data = await RSSHub.request(url);
+    return data;
+  }
+
+  // 例如下面是每分钟执行一次
+  @TaskLocal('* * * * * 1')
+  async test() {
+    console.log(1);
   }
 }

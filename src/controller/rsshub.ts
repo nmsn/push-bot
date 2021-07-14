@@ -15,17 +15,17 @@ export class RssHubController {
   }
 
   @Get('/:type')
-  async getTypeUrl(@Param() type: RSSHubType) {
+  async getType(@Param() type: RSSHubType) {
     console.log(type);
-    const data = await this.rsshubService.getTypeUrl(type);
+    const data = await this.rsshubService.getType(type);
     console.log(data);
     return data;
   }
 
-  @Get('/url/:type')
-  async getTypeUrl(@Param() type: RSSHubType) {
-    console.log(type);
-    const data = await this.rsshubService.getTypeUrl(type);
+  @Get('/url/:url')
+  async getUrl(@Param() url: string) {
+    console.log(url);
+    const data = await this.rsshubService.getUrl(url);
     console.log(data);
     return data;
   }
