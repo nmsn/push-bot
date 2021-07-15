@@ -1,18 +1,32 @@
-import { Provide, Inject, TaskLocal, Task } from '@midwayjs/decorator';
+import { Provide } from '@midwayjs/decorator';
 const RSSHub = require('rsshub');
 
-export type RSSHubType =
-  | 'zhihu'
-  | 'juejin'
-  | 'github'
-  | 'gitchat'
-  | 'damai'
-  | 'v2ex'
-  | 'segmentfault'
-  | 'd2'
-  | 'imuseum';
+export enum RSSHubEnum {
+  zhihu = 'zhihu',
+  github = 'github',
+  juejin = 'juejin',
+  gitchat = 'gitchat',
+  damai = 'damai',
+  v2ex = 'v2ex',
+  segmentfault = 'segmentfault',
+  d2 = 'd2',
+  imuseum = 'imuseum',
+}
+
+// export type RSSHubType = typeof RSSHubEnum;
+
+// export type RSSHubType =
+//   | 'zhihu'
+//   | 'juejin'
+//   | 'github'
+//   | 'gitchat'
+//   | 'damai'
+//   | 'v2ex'
+//   | 'segmentfault'
+//   | 'd2'
+//   | 'imuseum';
 // 获取类型对应的所有链接
-const getType = (type?: RSSHubType) => {
+const getType = (type?: RSSHubEnum) => {
   return `/api/routes/${type}`;
 };
 
@@ -100,24 +114,54 @@ RSSHub.init({
 @Provide()
 export class RSSHubService {
   async getData() {
-    const data = await RSSHub.request(getType('juejin'));
+    const data = await RSSHub.request(getType('juejin' as RSSHubEnum));
     console.log(data);
     return data;
   }
 
-  async getType(type: RSSHubType) {
-    const data = await RSSHub.request(getType(type));
-    return data;
+  async getTypeRoute(type: RSSHubEnum) {
+    try {
+      const { data } = await RSSHub.request(getType(type));
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async getAllTypeRoute() {
+    try {
+      const arr = Object.values(RSSHubEnum);
+      const reqArr = arr.map(item => RSSHub.request(getType(item)));
+      const resArr = await Promise.all(reqArr);
+      const data = resArr.map(item => item.data);
+      return data;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async getUrl(url: string) {
-    const data = await RSSHub.request(url);
-    return data;
+    const formatUrl = url.replace(/-/g, '/');
+    console.log(formatUrl);
+    try {
+      const { data } = await RSSHub.request(`/${formatUrl}`);
+      return data;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
   }
 
-  // 例如下面是每分钟执行一次
-  @TaskLocal('* * * * * 1')
-  async test() {
-    console.log(1);
+  async getJuejinCategory() {
+    console.log(getJuejinCategory('frontend'));
+    try {
+      const { data } = await RSSHub.request(
+        getJuejinTrending('frontend', 'weekly')
+      );
+      return data;
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
   }
 }
