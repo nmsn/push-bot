@@ -14,6 +14,14 @@ export class RssHubController {
     return data;
   }
 
+  @Get('/type/:type')
+  async getType(@Param() type: RSSHubEnum) {
+    console.log(type);
+    const data = await this.rsshubService.getTypeRoute(type);
+    console.log(data);
+    return data;
+  }
+
   @Get('/allType')
   async getAllType() {
     try {
@@ -43,13 +51,5 @@ export class RssHubController {
       console.log(e);
       return 'err';
     }
-  }
-
-  @Get('/type/:type')
-  async getType(@Param() type: RSSHubEnum) {
-    console.log(type);
-    const data = await this.rsshubService.getTypeRoute(type);
-    console.log(data);
-    return data;
   }
 }

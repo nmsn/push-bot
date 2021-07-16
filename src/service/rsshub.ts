@@ -142,7 +142,7 @@ export class RSSHubService {
 
   async getUrl(url: string) {
     const formatUrl = url.replace(/-/g, '/');
-    console.log(formatUrl);
+    console.log(`/${formatUrl}`);
     try {
       const { data } = await RSSHub.request(`/${formatUrl}`);
       return data;
